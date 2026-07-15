@@ -6,7 +6,7 @@ O MINDCoat OS é um sistema de controle para o equipamento de recobrimento por i
 ## O que este sistema faz
 * **Automação de Movimento:** Controle do Eixo Z com parâmetros ajustáveis de velocidade, tempo de imersão e ciclos de repetição.
 * **Monitoramento Térmico:** Gerenciamento independente das 6 estações de aquecimento, permitindo controle de temperatura e detecção de falhas nos sensores.
-* **Agitação Controlada:** Ativação individual dos motores de agitação para cada béquere.
+* **Agitação Controlada:** Ativação individual dos motores de agitação para cada béquer.
 * **Gerenciamento de Receitas:** Interface para salvar e carregar configurações de processo recorrentes.
 
 ## Tecnologias Utilizadas
@@ -14,5 +14,5 @@ O MINDCoat OS é um sistema de controle para o equipamento de recobrimento por i
 * **Frontend:** Interface Web (SPA) construída com HTML5, Tailwind CSS e Vanilla JavaScript.
 * **Integração:** Arquitetura baseada em API para comunicação entre o hardware de controle e a interface do usuário.
 
-## Status
-Em desenvolvimento.
+## Status do Projeto
+⚠️ **Em desenvolvimento:** Este projeto encontra-se em fase de construção e implementação. Funcionalidades e estruturas podem sofrer alterações até a versão estável.
