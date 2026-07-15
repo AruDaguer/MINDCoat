@@ -34,7 +34,7 @@
         body {
             font-family: 'Outfit', sans-serif;
         }
-       .code-font {
+      .code-font {
             font-family: 'JetBrains Mono', monospace;
         }
     </style>
@@ -205,7 +205,7 @@
                             <i class="fa-solid fa-temperature-low text-cyber-blue"></i> <span data-translate="thermal_overview">Monitoramento das Placas de Aquecimento</span>
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-6 gap-4" id="dashboard-temp-grid">
-                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -270,7 +270,7 @@
                                 <div class="space-y-2">
                                     <label class="block text-xs text-slate-400 font-semibold" data-translate="mix_toggles">Chaves dos Motores de Agitação</label>
                                     <div class="grid grid-cols-2 gap-2" id="mixing-toggles-container">
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                                         </button>
                                     </div>
                                     <div id="recipes-list" class="space-y-2 max-h-48 overflow-y-auto pr-2">
-                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -303,7 +303,7 @@
 
                 <div id="thermal-tab" class="hidden space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="beakers-thermal-matrix">
-                        </div>
+                    </div>
 
                     <div class="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 shadow-xl">
                         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -315,7 +315,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-4" id="fault-leds-bar">
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -335,7 +335,7 @@
     </div>
 
     <script>
-        // TRADUÇÕES EM PORTUGUÊS E INGLÊS (Lógica unificada)
+        // TRADUÇÕES EM PORTUGUÊS E INGLÊS 
         const translations = {
             pt: {
                 pin_label: "Insira o PIN de Segurança para Acessar",
@@ -424,28 +424,31 @@
         let currentLang = 'pt';
         let currentTab = 'dashboard-tab';
 
+        // Função para alternar o idioma da interface
         function setLanguage(lang) {
             currentLang = lang;
-            document.querySelectorAll('[data-translate]').forEach(el => {
+            const translatableElements = Array.from(document.getElementsByTagName('*')).filter(el => el.hasAttribute('data-translate'));
+            translatableElements.forEach(el => {
                 const key = el.getAttribute('data-translate');
-                if (translations[lang][key]) {
-                    el.textContent = translations[lang][key];
+                const langDict = Reflect.get(translations, lang);
+                const translatedText = Reflect.get(langDict, key);
+                if (translatedText) {
+                    el.textContent = translatedText;
                 }
             });
             
-            // Re-render loops to capture translations change inside dynamically created elements
             renderMixingToggles();
             renderThermalMatrix();
         }
 
         function unlockConsole() {
             const pin = document.getElementById('pin-input').value;
-            if (pin === '0' || pin === '808') { // senhas padrão
+            if (pin === '0' || pin === '808') {
                 document.getElementById('pin-gate').classList.add('hidden');
                 document.getElementById('app-container').classList.remove('hidden');
                 showToast("Conexão estabelecida com Klipper Engine!", "success");
                 updateState();
-                setInterval(updateState, 500); // Poll server every 500ms
+                setInterval(updateState, 500); // Polling a cada 500ms
                 loadRecipesList();
             } else {
                 alert("PIN Inválido! Tente '0' (padrão) ou '808' (admin).");
@@ -458,7 +461,7 @@
                 btn.classList.add('text-slate-400');
             });
             
-            const activeBtn = document.getElementById(`btn-${tabId}`);
+            const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.add('bg-slate-800', 'text-white');
             activeBtn.classList.remove('text-slate-400');
 
@@ -487,7 +490,7 @@
             }, 3000);
         }
 
-        // FETCH REAL TIME STATE FROM PYTHON BACKEND
+        // TELEMETRIA EM TEMPO REAL 
         async function updateState() {
             try {
                 const response = await fetch('/api/status');
@@ -496,24 +499,25 @@
                 const state = data.state;
                 const config = data.config;
 
-                // Update text statuses
-                document.getElementById('lbl-z-pos').innerHTML = `${state.z_position.toFixed(2)} <span class="text-sm font-normal">mm</span>`;
-                document.getElementById('lbl-dwell').innerHTML = `${Math.ceil(state.dwell_countdown)} <span class="text-sm font-normal">s</span>`;
-                document.getElementById('lbl-dry').innerHTML = `${state.dry_countdown.toFixed(1)} <span class="text-sm font-normal">s</span>`;
-                document.getElementById('lbl-cycle').textContent = `${state.current_cycle} / ${config.dip_times}`;
+                // Atualização dos painéis numéricos simples
+                document.getElementById('lbl-z-pos').innerHTML = state.z_position.toFixed(2) + ' <span class="text-sm font-normal">mm</span>';
+                document.getElementById('lbl-dwell').innerHTML = Math.ceil(state.dwell_countdown) + ' <span class="text-sm font-normal">s</span>';
+                document.getElementById('lbl-dry').innerHTML = state.dry_countdown.toFixed(1) + ' <span class="text-sm font-normal">s</span>';
+                document.getElementById('lbl-cycle').textContent = state.current_cycle + ' / ' + config.dip_times;
                 document.getElementById('status-bar-message').textContent = state.status_message;
 
-                // Z Progress update
+                // Barra de progresso linear
                 const percent = (state.z_position / config.travel) * 100;
-                document.getElementById('z-progress-bar').style.width = `${percent}%`;
+                document.getElementById('z-progress-bar').style.width = percent + '%';
 
-                // Up Limit & Down Limit (Image 2 indicator circles)
-                document.getElementById('led-up-limit').className = `w-3 h-3 rounded-full ${state.up_limit? 'bg-cyber-green shadow-lg shadow-emerald-500/50' : 'bg-slate-800'}`;
-                document.getElementById('led-down-limit').className = `w-3 h-3 rounded-full ${state.down_limit? 'bg-cyber-red shadow-lg shadow-red-500/50' : 'bg-slate-800'}`;
+                // Lógica de feedback físico de limite de segurança (Home do Eixo Z)
+                document.getElementById('led-up-limit').className = 'w-3 h-3 rounded-full ' + (state.up_limit? 'bg-cyber-green shadow-lg shadow-emerald-500/50' : 'bg-slate-800');
+                document.getElementById('led-down-limit').className = 'w-3 h-3 rounded-full ' + (state.down_limit? 'bg-cyber-red shadow-lg shadow-red-500/50' : 'bg-slate-800');
 
-                // Update Stirring Buttons Classes
-               .forEach(spd => {
-                    const btn = document.getElementById(`stir-btn-${spd}`);
+                // Atualização dos botões físicos de velocidade 
+                const speedModes = Array.of('OFF', 'LOW', 'HIGH');
+                speedModes.forEach(spd => {
+                    const btn = document.getElementById('stir-btn-' + spd);
                     if (state.stirring_speed === spd) {
                         btn.className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-cyber-blue text-white";
                     } else {
@@ -521,7 +525,7 @@
                     }
                 });
 
-                // Set initial parameters forms if they are not actively focused
+                // Preenchimento dos formulários se o foco do usuário não estiver neles
                 if (document.activeElement.tagName!== 'INPUT') {
                     document.getElementById('input-travel').value = config.travel;
                     document.getElementById('input-upspeed').value = config.up_speed;
@@ -536,13 +540,13 @@
                 updateDiagnosticLEDs(state);
 
             } catch (err) {
-                console.error("Erro na sincronização de dados Moonraker/Klipper:", err);
+                console.error("Erro na sincronização de dados:", err);
                 document.getElementById('mcu-status-badge').className = "px-2 py-0.5 rounded-full bg-cyber-red/20 text-cyber-red font-bold flex items-center gap-1";
                 document.getElementById('mcu-status-badge').textContent = "Offline";
             }
         }
 
-        // RENDER LIVE MIXING SWITCHES (IMAGE 4)
+        // RENDERIZAÇÃO DAS CHAVES DE AGITAÇÃO 
         function renderMixingToggles() {
             const container = document.getElementById('mixing-toggles-container');
             if (container.children.length === 0) {
@@ -550,9 +554,9 @@
                     const el = document.createElement('div');
                     el.className = "flex items-center justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800/80";
                     el.innerHTML = `
-                        <span class="text-xs font-semibold text-slate-300">Est. ${i + 1}</span>
-                        <button onclick="toggleMixing(${i})" id="mix-toggle-btn-${i}" class="w-10 h-5 bg-slate-800 rounded-full relative transition">
-                            <span class="w-4 h-4 bg-slate-400 rounded-full absolute top-0.5 left-0.5 transition" id="mix-toggle-ball-${i}"></span>
+                        <span class="text-xs font-semibold text-slate-300">Est. ` + (i + 1) + `</span>
+                        <button onclick="toggleMixing(` + i + `)" id="mix-toggle-btn-` + i + `" class="w-10 h-5 bg-slate-800 rounded-full relative transition">
+                            <span class="w-4 h-4 bg-slate-400 rounded-full absolute top-0.5 left-0.5 transition" id="mix-toggle-ball-` + i + `"></span>
                         </button>
                     `;
                     container.appendChild(el);
@@ -564,7 +568,8 @@
             const response = await fetch('/api/status');
             const data = await response.json();
             const list = data.state.mixing_status;
-            list[idx] =!list[idx];
+            const currentVal = list.at(idx);
+            list.splice(idx, 1,!currentVal); // Inverte o valor atual da chave de agitação
             
             await fetch('/api/stirring', {
                 method: 'POST',
@@ -572,9 +577,9 @@
                 body: JSON.stringify({ mixing: list })
             });
             
-            const btn = document.getElementById(`mix-toggle-btn-${idx}`);
-            const ball = document.getElementById(`mix-toggle-ball-${idx}`);
-            if (list[idx]) {
+            const btn = document.getElementById('mix-toggle-btn-' + idx);
+            const ball = document.getElementById('mix-toggle-ball-' + idx);
+            if (list.at(idx)) {
                 btn.className = "w-10 h-5 bg-cyber-green rounded-full relative transition";
                 ball.className = "w-4 h-4 bg-slate-950 rounded-full absolute top-0.5 right-0.5 transition";
             } else {
@@ -583,7 +588,7 @@
             }
         }
 
-        // CONTROL COMMANDS
+        // COMANDOS DE DESPACHO
         async function sendAction(actionName) {
             const response = await fetch('/api/control', {
                 method: 'POST',
@@ -592,7 +597,7 @@
             });
             const res = await response.json();
             if (res.status === "success") {
-                showToast(`Comando Klipper [${actionName.toUpperCase()}] enviado!`);
+                showToast("Comando Klipper enviado ao driver DM422!");
             }
         }
 
@@ -613,7 +618,7 @@
                 body: JSON.stringify(data)
             });
             if (response.ok) {
-                showToast("Receita e movimentos aplicados no firmware!");
+                showToast("Movimentação atualizada!");
                 switchTab('dashboard-tab');
             }
         }
@@ -626,40 +631,40 @@
             });
         }
 
-        // UPDATE DASHBOARD HEATER MINI-GRID
+        // CARDS TÉRMICOS DO DASHBOARD PRINCIPAL 
         function updateDashboardTempGrid(state) {
             const container = document.getElementById('dashboard-temp-grid');
             container.innerHTML = '';
             for (let i = 0; i < 6; i++) {
-                const pv = state.temperatures[i];
-                const sv = state.setpoints[i];
-                const on = state.heaters_on[i];
-                const fault = state.faults[i];
+                const pv = state.temperatures.at(i);
+                const sv = state.setpoints.at(i);
+                const on = state.heaters_on.at(i);
+                const fault = state.faults.at(i);
 
                 const card = document.createElement('div');
                 card.className = "bg-slate-950 p-3 rounded-xl border border-slate-800 flex flex-col justify-between";
                 card.innerHTML = `
                     <div class="flex justify-between items-center mb-1">
-                        <span class="text-[10px] text-slate-400 font-bold">EST. ${i + 1}</span>
-                        <span class="w-2 h-2 rounded-full ${fault? 'bg-cyber-red animate-ping' : (on? 'bg-cyber-green animate-pulse' : 'bg-slate-800')}"></span>
+                        <span class="text-[10px] text-slate-400 font-bold">EST. ` + (i + 1) + `</span>
+                        <span class="w-2 h-2 rounded-full ` + (fault? 'bg-cyber-red animate-ping' : (on? 'bg-cyber-green animate-pulse' : 'bg-slate-800')) + `"></span>
                     </div>
-                    <div class="code-font font-bold text-lg ${fault? 'text-cyber-red' : (on? 'text-cyber-green' : 'text-slate-400')}">
-                        ${fault? 'orAL' : pv.toFixed(1) + '°C'}
+                    <div class="code-font font-bold text-lg ` + (fault? 'text-cyber-red' : (on? 'text-cyber-green' : 'text-slate-400')) + `">
+                        ` + (fault? 'orAL' : pv.toFixed(1) + '°C') + `
                     </div>
-                    <div class="text-[10px] text-slate-500 mt-1">Set: ${sv}°C</div>
+                    <div class="text-[10px] text-slate-500 mt-1 font-semibold">Set: ` + sv + `°C</div>
                 `;
                 container.appendChild(card);
             }
         }
 
-        // RENDERS AND UPDATES THERMAL DETAILED SCREEN (IMAGE 5 MAP)
+        // ABA DE DETALHAMENTO DO SISTEMA DE CONTROLE TÉRMICO 
         function renderThermalMatrix() {
             const container = document.getElementById('beakers-thermal-matrix');
             if (container.children.length === 0) {
                 for (let i = 0; i < 6; i++) {
                     const el = document.createElement('div');
                     el.className = "bg-slate-900 border border-slate-800/80 rounded-2xl p-5 shadow-xl space-y-4";
-                    el.id = `thermal-station-card-${i}`;
+                    el.id = 'thermal-station-card-' + i;
                     container.appendChild(el);
                 }
             }
@@ -672,47 +677,47 @@
             const state = data.state;
 
             for (let i = 0; i < 6; i++) {
-                const card = document.getElementById(`thermal-station-card-${i}`);
+                const card = document.getElementById('thermal-station-card-' + i);
                 if (!card) continue;
                 
-                const pv = state.temperatures[i];
-                const sv = state.setpoints[i];
-                const on = state.heaters_on[i];
-                const fault = state.faults[i];
+                const pv = state.temperatures.at(i);
+                const sv = state.setpoints.at(i);
+                const on = state.heaters_on.at(i);
+                const fault = state.faults.at(i);
 
                 card.innerHTML = `
                     <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-slate-300">Estação / Station ${i + 1}</h4>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ${fault? 'bg-cyber-red/20 text-cyber-red' : 'bg-slate-850 text-slate-400'}">
-                            ${fault? 'Sensor Fault (orAL)' : 'Active (Pt100/Thermocouple)'}
+                        <h4 class="font-bold text-slate-300">Estação ` + (i + 1) + `</h4>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold ` + (fault? 'bg-cyber-red/20 text-cyber-red' : 'bg-slate-800 text-slate-400') + `">
+                            ` + (fault? 'Circuito Aberto (orAL)' : 'Pt100/Termopar OK') + `
                         </span>
                     </div>
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-slate-950 p-3 border border-slate-800/60 rounded-xl">
                             <span class="text-[10px] text-slate-500 block uppercase font-bold">Temp. PV</span>
-                            <span class="text-2xl font-bold code-font ${fault? 'text-cyber-red' : 'text-cyber-green'}">
-                                ${fault? 'orAL' : pv.toFixed(1) + ' °C'}
+                            <span class="text-2xl font-bold code-font ` + (fault? 'text-cyber-red' : 'text-cyber-green') + `">
+                                ` + (fault? 'orAL' : pv.toFixed(1) + ' °C') + `
                             </span>
                         </div>
                         <div class="bg-slate-950 p-3 border border-slate-800/60 rounded-xl">
                             <span class="text-[10px] text-slate-500 block uppercase font-bold">Setpoint SV</span>
-                            <input type="number" onchange="setHeatTarget(${i}, this.value)" value="${sv}" class="w-full bg-transparent text-2xl font-bold code-font text-cyber-blue focus:outline-none">
+                            <input type="number" onchange="setHeatTarget(` + i + `, this.value)" value="` + sv + `" class="w-full bg-transparent text-2xl font-bold code-font text-cyber-blue focus:outline-none">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="triggerPIDTune(${i})" class="bg-slate-800 hover:bg-slate-750 text-slate-200 py-2 rounded-xl text-xs font-semibold border border-slate-700 flex items-center justify-center gap-1.5">
+                        <button onclick="triggerPIDTune(` + i + `)" class="bg-slate-800 hover:bg-slate-750 text-slate-200 py-2 rounded-xl text-xs font-semibold border border-slate-700 flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-bolt text-cyber-yellow"></i> Auto-Tune (AI)
                         </button>
-                        <button onclick="toggleHeater(${i}, ${!on})" class="py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 ${on? 'bg-cyber-green text-slate-950' : 'bg-slate-800 text-slate-500 border border-slate-700'}">
-                            <i class="fa-solid fa-power-off"></i> ${on? 'HEATER ON' : 'HEATER OFF'}
+                        <button onclick="toggleHeater(` + i + `, ` +!on + `)" class="py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 ` + (on? 'bg-cyber-green text-slate-950' : 'bg-slate-800 text-slate-500 border border-slate-700') + `">
+                            <i class="fa-solid fa-power-off"></i> ` + (on? 'HEATER ON' : 'HEATER OFF') + `
                         </button>
                     </div>
 
                     <div class="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-800/40">
-                        <span>Simular Quebra de Cabo (orAL)</span>
-                        <input type="checkbox" onchange="toggleFault(${i}, this.checked)" ${fault? 'checked' : ''} class="rounded border-slate-800 text-cyber-red focus:ring-0">
+                        <span>Simular Quebra de Sensor (orAL)</span>
+                        <input type="checkbox" onchange="toggleFault(` + i + `, this.checked)" ` + (fault? 'checked' : '') + ` class="rounded border-slate-800 text-cyber-red focus:ring-0">
                     </div>
                 `;
             }
@@ -755,25 +760,25 @@
             showToast(data.message, "success");
         }
 
-        // UPDATE FAULT LEDs ROW (BOTTOM OF IMAGE 5)
+        // UPDATE FAULT LEDs ROW 
         function updateDiagnosticLEDs(state) {
             const bar = document.getElementById('fault-leds-bar');
             bar.innerHTML = '';
             for (let i = 0; i < 6; i++) {
-                const f = state.faults[i];
+                const f = state.faults.at(i);
                 const el = document.createElement('div');
                 el.className = "flex flex-col items-center gap-1";
                 el.innerHTML = `
-                    <span class="text-[9px] text-slate-500 font-bold">EST. ${i + 1}</span>
-                    <span class="w-4 h-4 rounded-full border border-slate-800 flex items-center justify-center ${f? 'bg-cyber-red shadow-lg shadow-red-500/50' : 'bg-slate-900'}">
-                        ${f? '<i class="fa-solid fa-xmark text-[8px] text-white"></i>' : ''}
+                    <span class="text-[9px] text-slate-500 font-bold">EST. ` + (i + 1) + `</span>
+                    <span class="w-4 h-4 rounded-full border border-slate-800 flex items-center justify-center ` + (f? 'bg-cyber-red shadow-lg shadow-red-500/50' : 'bg-slate-900') + `">
+                        ` + (f? '<i class="fa-solid fa-xmark text-[8px] text-white"></i>' : '') + `
                     </span>
                 `;
                 bar.appendChild(el);
             }
         }
 
-        // RECIPES DB MANAGEMENT
+        // GERENCIADOR DE RECEITAS COMPATÍVEL
         async function loadRecipesList() {
             const response = await fetch('/api/recipes');
             const data = await response.json();
@@ -781,12 +786,12 @@
             list.innerHTML = '';
             
             Object.keys(data.recipes).forEach(name => {
-                const recipe = data.recipes[name];
+                const recipe = Reflect.get(data.recipes, name);
                 const btn = document.createElement('div');
                 btn.className = "bg-slate-950 p-2.5 rounded-lg border border-slate-800/80 flex items-center justify-between";
                 btn.innerHTML = `
-                    <span class="text-xs font-semibold code-font text-slate-300">${name}</span>
-                    <button onclick="loadRecipeConfig('${name}')" class="text-xs bg-cyber-blue/20 text-cyber-blue hover:bg-cyber-blue hover:text-white px-2 py-1 rounded transition font-bold">
+                    <span class="text-xs font-semibold code-font text-slate-300">` + name + `</span>
+                    <button onclick="loadRecipeConfig('` + name + `')" class="text-xs bg-cyber-blue/20 text-cyber-blue hover:bg-cyber-blue hover:text-white px-2 py-1 rounded transition font-bold">
                         Carregar / Load
                     </button>
                 `;
@@ -815,27 +820,27 @@
             });
             document.getElementById('recipe-name').value = '';
             loadRecipesList();
-            showToast(`Receita "${name}" salva com sucesso!`);
+            showToast("Receita \"" + name + "\" salva com sucesso!");
         }
 
         async function loadRecipeConfig(name) {
             const response = await fetch('/api/recipes');
             const data = await response.json();
-            const config = data.recipes[name];
+            const config = Reflect.get(data.recipes, name);
             
             await fetch('/api/config', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(config)
             });
-            showToast(`Receita "${name}" carregada no console!`);
+            showToast("Receita carregada no console!");
             updateState();
         }
 
-        // INITIAL BUILD CALLS
+        // CHAMADAS DE INICIALIZAÇÃO
         renderMixingToggles();
         renderThermalMatrix();
-        setInterval(updateThermalValues, 1000); // Poll thermal values specifically
+        setInterval(updateThermalValues, 1000); // Pool térmico dedicado
     </script>
 </body>
 </html>
