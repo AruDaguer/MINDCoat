@@ -1,0 +1,78 @@
+<div id="dashboard-tab" class="space-y-6">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
+        <!-- Telemetry Panel -->
+        <div class="panel xl:col-span-2">
+            <div class="panel-header">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-route text-brand-blue"></i> <span data-translate="profile_z_title">Perfil de Elevação (Z)</span></div>
+                <div class="text-xs font-mono text-zinc-500">M114</div>
+            </div>
+            <div class="panel-body flex flex-col gap-6">
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-zinc-950 h-3 rounded-full overflow-hidden border border-zinc-800 relative">
+                    <div id="z-progress-bar" class="bg-brand-blue h-full transition-all duration-200" style="width: 0%"></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-zinc-950 p-3 border border-zinc-800/50 rounded flex flex-col">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold mb-1" data-translate="current_travel">Z Pos</span>
+                        <span id="lbl-z-pos" class="text-2xl font-bold code-font text-zinc-100">0.00<span class="text-xs text-zinc-500 font-normal ml-1">mm</span></span>
+                    </div>
+                    <div class="bg-zinc-950 p-3 border border-zinc-800/50 rounded flex flex-col">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold mb-1" data-translate="dwell_time_lbl">Imersão</span>
+                        <span id="lbl-dwell" class="text-2xl font-bold code-font text-brand-orange">10<span class="text-xs text-zinc-500 font-normal ml-1">s</span></span>
+                    </div>
+                    <div class="bg-zinc-950 p-3 border border-zinc-800/50 rounded flex flex-col">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold mb-1" data-translate="dry_time_lbl">Secagem</span>
+                        <span id="lbl-dry" class="text-2xl font-bold code-font text-brand-green">0.0<span class="text-xs text-zinc-500 font-normal ml-1">s</span></span>
+                    </div>
+                    <div class="bg-zinc-950 p-3 border border-zinc-800/50 rounded flex flex-col">
+                        <span class="text-[10px] text-zinc-500 uppercase font-semibold mb-1" data-translate="active_cycle_lbl">Ciclo</span>
+                        <span id="lbl-cycle" class="text-2xl font-bold code-font text-zinc-300">1 / 1</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-auto pt-4 border-t border-zinc-800/50">
+                    <div class="flex items-center gap-2">
+                        <span id="led-up-limit" class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+                        <span class="text-[11px] text-zinc-400 font-medium uppercase" data-translate="up_limit">Endstop Top</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] text-zinc-400 font-medium uppercase" data-translate="down_limit">Endstop Bot</span>
+                        <span id="led-down-limit" class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-gamepad text-brand-blue"></i> <span data-translate="sys_controls">Controle (Macros)</span></div>
+            </div>
+            <div class="panel-body flex flex-col justify-center gap-3">
+                <button onclick="sendAction('run')" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 font-medium py-3 rounded flex items-center justify-center gap-2 transition-colors text-sm">
+                    <i class="fa-solid fa-play text-brand-green"></i> <span data-translate="btn_run">Iniciar Ciclo</span>
+                </button>
+                <button onclick="sendAction('pause')" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 font-medium py-3 rounded flex items-center justify-center gap-2 transition-colors text-sm">
+                    <i class="fa-solid fa-pause text-brand-orange"></i> <span data-translate="btn_pause">Pausar</span>
+                </button>
+                <button onclick="sendAction('home')" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-100 border border-zinc-700 font-medium py-3 rounded flex items-center justify-center gap-2 transition-colors text-sm">
+                    <i class="fa-solid fa-house text-brand-blue"></i> <span data-translate="btn_home">Homing Z (G28)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <div class="flex items-center gap-2"><i class="fa-solid fa-temperature-low text-brand-blue"></i> <span data-translate="thermal_overview">Heaters</span></div>
+        </div>
+        <div class="panel-body">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-3" id="dashboard-temp-grid">
+                <!-- Populated via JS -->
+            </div>
+        </div>
+    </div>
+</div>

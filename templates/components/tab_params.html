@@ -1,0 +1,91 @@
+<div id="params-tab" class="hidden space-y-6">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
+        <div class="panel">
+            <div class="panel-header">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-up-down text-brand-blue"></i> <span data-translate="z_params">Cinemática Z</span></div>
+            </div>
+            <div class="panel-body space-y-4">
+                <div>
+                    <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="travel_lbl">Curso (mm)</label>
+                    <input type="number" id="input-travel" step="0.5" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="upspeed_lbl">Içamento (mm/m)</label>
+                        <input type="number" id="input-upspeed" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="downspeed_lbl">Imersão (mm/m)</label>
+                        <input type="number" id="input-downspeed" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="dwell_lbl">Tempo Imersão (s)</label>
+                        <input type="number" id="input-dwell" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="dry_lbl">Tempo Secagem (s)</label>
+                        <input type="number" id="input-dry" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-arrows-spin text-brand-blue"></i> <span data-translate="carrousel_stir">Carrossel & Agitação</span></div>
+            </div>
+            <div class="panel-body space-y-4">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="times_lbl">Ciclos (Qtd)</label>
+                        <input type="number" id="input-cycles" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="pos_lbl">Estação Inicial</label>
+                        <input type="number" id="input-position" min="1" max="6" class="w-full bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue code-font">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="stirring_speed">Velocidade Agitação</label>
+                    <div class="flex gap-1 p-1 bg-zinc-950 border border-zinc-800 rounded">
+                        <button onclick="setStirringSpeed('OFF')" id="stir-btn-OFF" class="flex-1 py-1 rounded text-xs font-semibold bg-zinc-800 text-zinc-400">OFF</button>
+                        <button onclick="setStirringSpeed('LOW')" id="stir-btn-LOW" class="flex-1 py-1 rounded text-xs font-semibold bg-zinc-950 hover:bg-zinc-800 text-zinc-400" data-translate="stir_low">LOW</button>
+                        <button onclick="setStirringSpeed('HIGH')" id="stir-btn-HIGH" class="flex-1 py-1 rounded text-xs font-semibold bg-zinc-950 hover:bg-zinc-800 text-zinc-400" data-translate="stir_high">HIGH</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] uppercase text-zinc-500 font-semibold mb-1" data-translate="mix_toggles">Atuadores</label>
+                    <div class="grid grid-cols-2 gap-2" id="mixing-toggles-container">
+                        <!-- Preenchido via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel flex flex-col">
+            <div class="panel-header">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-folder-open text-brand-blue"></i> <span data-translate="recipes_title">Macros & Receitas</span></div>
+            </div>
+            <div class="panel-body flex flex-col gap-4">
+                <div class="flex gap-2">
+                    <input type="text" id="recipe-name" placeholder="Ex: Filme_Silica_A1" class="flex-1 bg-zinc-950 border border-zinc-800 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-brand-blue">
+                    <button onclick="saveRecipe()" class="bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-100 px-3 py-1.5 rounded text-sm transition-colors">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                    </button>
+                </div>
+                <div id="recipes-list" class="space-y-2 flex-1 overflow-y-auto">
+                    <!-- Preenchido via JS -->
+                </div>
+                
+                <button onclick="saveConfigurations()" class="w-full bg-brand-blue hover:bg-blue-600 text-white font-medium py-2 rounded flex items-center justify-center gap-2 transition-colors text-sm mt-auto">
+                    <i class="fa-solid fa-check"></i> <span data-translate="btn_apply">Salvar Configurações (SAVE_CONFIG)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

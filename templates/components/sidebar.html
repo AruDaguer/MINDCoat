@@ -1,0 +1,32 @@
+<aside class="w-60 bg-zinc-900 border-r border-zinc-800 flex flex-col justify-between hidden md:flex">
+    <div>
+        <div class="h-14 border-b border-zinc-800 flex items-center px-5 gap-3">
+            <i class="fa-solid fa-layer-group text-xl text-brand-blue"></i>
+            <h2 class="font-bold text-base tracking-tight text-zinc-100">MINDCoat <span class="text-zinc-500 font-normal">OS</span></h2>
+        </div>
+
+        <nav class="p-3 space-y-1">
+            <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="w-full flex items-center gap-3 px-3 py-2 rounded bg-zinc-800 text-zinc-100 font-medium text-sm transition-colors">
+                <i class="fa-solid fa-chart-line w-5 text-center text-brand-blue"></i>
+                <span data-translate="tab_dashboard">Painel de Controle</span>
+            </button>
+            <button onclick="switchTab('params-tab')" id="btn-params-tab" class="w-full flex items-center gap-3 px-3 py-2 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 font-medium text-sm transition-colors">
+                <i class="fa-solid fa-sliders w-5 text-center"></i>
+                <span data-translate="tab_params">Configurações</span>
+            </button>
+            <button onclick="switchTab('thermal-tab')" id="btn-thermal-tab" class="w-full flex items-center gap-3 px-3 py-2 rounded text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 font-medium text-sm transition-colors">
+                <i class="fa-solid fa-temperature-half w-5 text-center"></i>
+                <span data-translate="tab_thermal">Módulo Térmico</span>
+            </button>
+        </nav>
+    </div>
+
+    <div class="p-4 border-t border-zinc-800">
+        <div class="flex items-center justify-between text-xs text-zinc-400 mb-3">
+            <span data-translate="status_mcu">MCU:</span>
+            <span id="mcu-status-badge" class="flex items-center gap-1.5 text-brand-green font-semibold">
+                <span class="w-2 h-2 bg-brand-green rounded-full animate-pulse"></span> Online
+            </span>
+        </div>
+    </div>
+</aside>

@@ -1,0 +1,19 @@
+<div id="thermal-tab" class="hidden space-y-6">
+    <div class="panel">
+        <div class="panel-body py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-stethoscope text-zinc-500"></i>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-200" data-translate="fault_bar">Diagnóstico ADC (Thermistor)</h4>
+                </div>
+            </div>
+            <div class="flex items-center gap-4" id="fault-leds-bar">
+                <!-- LEDs de falha injetados via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="beakers-thermal-matrix">
+        <!-- Estações Térmicas renderizadas via JS -->
+    </div>
+</div>

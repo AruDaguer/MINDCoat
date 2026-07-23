@@ -1,0 +1,20 @@
+<div id="pin-gate" class="fixed inset-0 bg-zinc-950/90 backdrop-blur-sm z-50 flex flex-col justify-center items-center">
+    <div class="panel w-full max-w-sm shadow-2xl">
+        <div class="panel-header justify-center py-4 bg-zinc-900">
+            <i class="fa-solid fa-layer-group text-brand-blue mr-2"></i> MINDCoat OS
+        </div>
+        <div class="panel-body space-y-5 text-center">
+            <p class="text-xs text-zinc-400 font-medium uppercase tracking-wider" data-translate="pin_label">Insira o PIN de Segurança</p>
+            <input type="password" id="pin-input" value="0" class="w-full bg-zinc-950 border border-zinc-800 rounded px-4 py-3 text-center text-xl font-bold code-font text-zinc-100 focus:outline-none focus:border-brand-blue transition-colors">
+            
+            <div class="flex gap-3">
+                <button onclick="setLanguage('pt')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-2 rounded text-xs font-semibold transition-colors">PT</button>
+                <button onclick="setLanguage('en')" class="flex-1 bg-zinc-800 hover:bg-zinc-700 py-2 rounded text-xs font-semibold transition-colors">EN</button>
+            </div>
+
+            <button onclick="unlockConsole()" class="w-full bg-brand-blue hover:bg-blue-600 text-white font-semibold py-2.5 rounded transition-colors text-sm">
+                <span data-translate="access_btn">Conectar</span>
+            </button>
+        </div>
+    </div>
+</div>
